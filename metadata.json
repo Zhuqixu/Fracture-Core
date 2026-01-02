@@ -1,0 +1,5 @@
+{
+  "name": "Fracture Core",
+  "description": "一款基于 React Three Fiber 构建的高能 FPS 游戏，具有肢体破坏机制、战术移动以及包括 RPG 和狙击步枪在内的多种武器。",
+  "requestFramePermissions": []
+}

@@ -21,8 +21,8 @@ const App: React.FC = () => {
 
   const handleStart = useCallback(() => {
     setGameStarted(true);
-    // Explicitly target the game canvas to avoid selecting minimap or other canvases
-    const canvas = document.querySelector('canvas[data-engine="three.js r169"]') as HTMLCanvasElement || document.querySelector('canvas');
+    // Robustly find the canvas element
+    const canvas = document.querySelector('canvas');
     if (canvas) {
         // Must be called directly from user gesture (click/key)
         canvas.requestPointerLock();

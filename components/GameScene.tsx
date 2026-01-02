@@ -8,17 +8,29 @@ import WeaponModel from './WeaponModel';
 import { PLAYER_CONFIG, COLLISION_BOXES, WEAPONS, UPDRAFTS, ENEMY_PARTS_CONFIG, ENEMY_CONFIG, MAP_BOUNDS, ENEMY_WEAPONS } from '../constants';
 import { WeaponType, EnemyData, ProjectileData, DebrisData, WeaponStats, EnemyPartData, InputState, EnemyWeaponType } from '../types';
 
-// Audio Context
-const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
-const audioCtx = new AudioContextClass();
+// Lazy Audio Context Initialization
+let audioCtx: AudioContext | null = null;
+const getAudioCtx = () => {
+    if (!audioCtx) {
+        const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+        if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+        }
+    }
+    return audioCtx;
+};
 
 const playSound = (type: 'shoot' | 'reload' | 'hit' | 'kill' | 'rpg' | 'jump_pad' | 'explode' | 'player_hit' | 'shield_hit' | 'knife_hit' | 'block' | 'empty') => {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+  
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
   osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  const now = audioCtx.currentTime;
+  gain.connect(ctx.destination);
+  const now = ctx.currentTime;
 
   if (type === 'shoot') {
     osc.type = 'sawtooth';
